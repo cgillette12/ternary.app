@@ -1,24 +1,62 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import { useState, useEffect } from 'react';
+import './App.scss';
+import { apiFetch } from './api/API'
+import Dashboard from './views/index'
+import Loader from './components/Loader/Loader'
+
+export interface ComputeUtilization {
+  // The name of the compute instance in the cloud platform.
+  id: string;
+  // Arbitrary key-value labels associated with this instance and others like it
+  // (e.g. team, environment, cost-center)
+  labels: Labels;
+  // Configured number of cores of this instance
+  cpus: number;
+  // Observed mean usage of CPU in fractional cores in the past 30 days.
+  cpuUsage: number;
+  // Configured amount of RAM in megabytes on this instance
+  memory: number;
+  // Observed mean usage of RAM in megabytes in the past 30 days.
+  memUsage: number;
+}
+
+interface Labels {
+  team: string;
+  environment: string
+}
 
 function App() {
+  const [error, setError] = useState<string | null>(null)
+  const [instanceUsage, setInstanceUsage] = useState<ComputeUtilization[]| null>(null)
+  const [isLoading, setisLoading] = useState<boolean>(false)
+  const [teams, setTeams] = useState<string[]>()
+
+  useEffect(() => {
+    init()
+  }, [])
+  const init = async (): Promise<void> => {
+    try {
+      setisLoading(true)
+      const instanceJson: ComputeUtilization[] = await apiFetch('instanceUsage.json') 
+      const allTeams: string[] = []
+      instanceJson.map((instance: ComputeUtilization) => !allTeams.includes(instance.labels.team) ? allTeams.push(instance.labels.team) : null)
+      setTeams(allTeams)
+      setInstanceUsage(instanceJson)
+      setisLoading(false)
+    } catch (error: any) {
+      setisLoading(false)
+      setError(error)
+    }
+  }
+  if (isLoading) {
+    return (<Loader className="animated fadeIn pt-1 text-center max-width: 50%;" message='...loading' />)
+  }
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
+    <div className="App h-100">
+      <header className="App-header bg-primary p-3">
+        Ternary app
       </header>
+      <Dashboard instanceUsage={instanceUsage || null} />
     </div>
   );
 }
