@@ -27,7 +27,7 @@ interface Labels {
 
 function App() {
   const [error, setError] = useState<string | null>(null)
-  const [instanceUsage, setInstanceUsage] = useState<ComputeUtilization[]| null>(null)
+  const [instanceUsage, setInstanceUsage] = useState<ComputeUtilization[] | null>(null)
   const [isLoading, setisLoading] = useState<boolean>(false)
   const [teams, setTeams] = useState<string[]>()
 
@@ -37,19 +37,24 @@ function App() {
   const init = async (): Promise<void> => {
     try {
       setisLoading(true)
-      const instanceJson: ComputeUtilization[] = await apiFetch('instanceUsage.json') 
+      const instanceJson: ComputeUtilization[] = await apiFetch('instanceUsage.json')
       const allTeams: string[] = []
       instanceJson.map((instance: ComputeUtilization) => !allTeams.includes(instance.labels.team) ? allTeams.push(instance.labels.team) : null)
       setTeams(allTeams)
       setInstanceUsage(instanceJson)
-      setisLoading(false)
+      setTimeout(() => {
+        setisLoading(false)
+      }, 5000)
     } catch (error: any) {
       setisLoading(false)
       setError(error)
     }
   }
   if (isLoading) {
-    return (<Loader className="animated fadeIn pt-1 text-center max-width: 50%;" message='...loading' />)
+    return (
+    <div className="min-vh-100 w-100 d-flex justify-content-center align-items-center flex-grow-1">
+      <Loader message='...loading' />
+    </div>)
   }
   return (
     <div className="App h-100">

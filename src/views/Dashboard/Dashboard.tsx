@@ -8,7 +8,7 @@ interface IDashboard {
 function Dashboard(props:IDashboard ) {
   
   return (
-    <div>Dashboard</div>
+    <div className='h-100'>Dashboard</div>
   )
 }
 export default Dashboard;
