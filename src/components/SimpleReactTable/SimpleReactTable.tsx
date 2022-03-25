@@ -1,44 +1,57 @@
-import { useTable } from 'react-table'
+import ReactTable from 'react-table-v6'
+import 'react-table/react-table.css';
 
 interface ISimpleReactTableProps {
-  columns: any[];
-  data: any[];
-  classStyle?: string;
+  columns?: any[];
+  data?: any[];
+  style?: any;
+  noData?: string;
+  handleOpenModal?: any;
+  onRowClick?: any;
+  classStyles?: string;
+  showPag?: boolean;
+  pageSize?: number;
 }
-export default function SimpleReactTableProps({ columns, data }: ISimpleReactTableProps) {
+const SimpleReactTable = (props: ISimpleReactTableProps) => {
+
   const {
-    getTableProps,
-    getTableBodyProps,
-    headerGroups,
-    rows,
-    prepareRow
-  } = useTable({
-    columns, data
-  })
-  // Render the UI for your table
+    data,
+    columns,
+    pageSize,
+    noData,
+    handleOpenModal,
+    classStyles,
+    showPag,
+    onRowClick,
+  } = props;
+
   return (
-    <table {...getTableProps()}>
-      <thead>
-        {headerGroups.map(headerGroup => (
-          <tr {...headerGroup.getHeaderGroupProps()}>
-            {headerGroup.headers.map(column => (
-              <th {...column.getHeaderProps()}>{column.render('Header')}</th>
-            ))}
-          </tr>
-        ))}
-      </thead>
-      <tbody {...getTableBodyProps()}>
-        {rows.map((row, i) => {
-          prepareRow(row)
-          return (
-            <tr {...row.getRowProps()}>
-              {row.cells.map(cell => {
-                return <td {...cell.getCellProps()}>{cell.render('Cell')}</td>
-              })}
-            </tr>
-          )
-        })}
-      </tbody>
-    </table>
-  )
-}
+    <ReactTable
+      className={classStyles ? classStyles : '-striped -highlight'}
+      data={data}
+      columns={columns}
+      defaultPageSize={pageSize ? pageSize : 5}
+      showPagination={showPag === false ? false : true}
+      noDataText={noData}
+      getTrProps={(_: any, rowInfo: any) => {
+        if (handleOpenModal && rowInfo && rowInfo.row) {
+          return {
+            onClick: () => {
+              props.handleOpenModal(rowInfo);
+            },
+          };
+        } else if (onRowClick && rowInfo && rowInfo.row) {
+          return {
+            onClick: () => {
+              onRowClick(rowInfo);
+            },
+          };
+        } else {
+          return {};
+        }
+      }}
+    />
+  );
+};
+
+export default SimpleReactTable;
