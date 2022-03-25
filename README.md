@@ -55,7 +55,7 @@ dependencies that must be installed.
 ● (Optional) Provide a docker build for automating the build process and distribution of the final
 product.
 
-
+https://ternary.app/quiz/instanceUsage.json
 Utilization data def 
 Data utilization refers to the continuous use of data in corporate activities to improve operational efficiency and productivity for the benefit of the business.
 

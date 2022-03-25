@@ -39,12 +39,15 @@ function App() {
       setisLoading(true)
       const instanceJson: ComputeUtilization[] = await apiFetch('instanceUsage.json')
       const allTeams: string[] = []
+
       instanceJson.map((instance: ComputeUtilization) => !allTeams.includes(instance.labels.team) ? allTeams.push(instance.labels.team) : null)
+      const testPrecent = Math.floor(39684.97764102355/65536 * 100)
       setTeams(allTeams)
       setInstanceUsage(instanceJson)
-      setTimeout(() => {
-        setisLoading(false)
-      }, 5000)
+      // setTimeout(() => {
+      // }, 5000)
+      setisLoading(false)
+      console.log(testPrecent)
     } catch (error: any) {
       setisLoading(false)
       setError(error)
@@ -52,14 +55,14 @@ function App() {
   }
   if (isLoading) {
     return (
-    <div className="min-vh-100 w-100 d-flex justify-content-center align-items-center flex-grow-1">
-      <Loader message='...loading' />
-    </div>)
+      <div className="min-vh-100 w-100 d-flex justify-content-center align-items-center flex-grow-1">
+        <Loader message='...loading' />
+      </div>)
   }
   return (
-    <div className="App h-100">
-      <header className="App-header bg-primary p-3">
-        Ternary app
+    <div className="App">
+      <header className="App-header bg-primary p-3 text-white">
+        <h2>Ternary app</h2>
       </header>
       <Dashboard instanceUsage={instanceUsage || null} />
     </div>
