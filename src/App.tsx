@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-unused-expressions */
+/* eslint-disable array-callback-return */
 import { useState, useEffect } from 'react';
 import './App.scss';
 import { apiFetch } from './api/API'
@@ -29,7 +31,7 @@ function App() {
   const [error, setError] = useState<string | null>(null)
   const [instanceUsage, setInstanceUsage] = useState<ComputeUtilization[] | null>(null)
   const [isLoading, setisLoading] = useState<boolean>(false)
-  const [teams, setTeams] = useState<string[]>()
+  const [filterables, setFilterables] = useState<{ teams: string[], envs: string[] }>({ teams: [], envs: [] })  
 
   useEffect(() => {
     init()
@@ -38,16 +40,19 @@ function App() {
     try {
       setisLoading(true)
       const instanceJson: ComputeUtilization[] = await apiFetch('instanceUsage.json')
-      const allTeams: string[] = []
-
-      instanceJson.map((instance: ComputeUtilization) => !allTeams.includes(instance.labels.team) ? allTeams.push(instance.labels.team) : null)
-      const testPrecent = Math.floor(39684.97764102355/65536 * 100)
-      setTeams(allTeams)
+      const filterables: { teams: string[], envs: string[] } = { teams: [], envs: [] }
+      instanceJson?.forEach((instance: ComputeUtilization) => {
+        const { team, environment } = instance.labels
+        if (!filterables.teams.includes(team)) {
+          filterables.teams = [...filterables.teams, team]
+        }
+        if (!filterables.envs.includes(environment)) {
+          filterables.envs = [...filterables.envs, environment]
+        }
+      })
+      setFilterables(filterables)
       setInstanceUsage(instanceJson)
-      // setTimeout(() => {
-      // }, 5000)
       setisLoading(false)
-      console.log(testPrecent)
     } catch (error: any) {
       setisLoading(false)
       setError(error)
@@ -64,7 +69,7 @@ function App() {
       <header className="App-header bg-primary p-3 text-white">
         <h2>Ternary app</h2>
       </header>
-      <Dashboard instanceUsage={instanceUsage || null} />
+      <Dashboard instanceUsage={instanceUsage || null} filterables={filterables || []} />
     </div>
   );
 }

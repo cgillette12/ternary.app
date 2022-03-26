@@ -1,45 +1,50 @@
 
- export const intancesJson = [
+export const intancesJson = [
   {
-    instance:'Nano',
+    instance: 'Nano',
     cpu: 2,
-    cpuHour: 6,
-    memory:0.5	
+    memory: 0.5
   },
   {
-    instance:'Micro',
+    instance: 'Micro',
     cpu: 2,
-    cpuHour: 12,
-    memory:1	
+    memory: 1
   },
   {
-    instance:'Small',
+    instance: 'Small',
     cpu: 2,
-    cpuHour: 24,
-    memory:2	
+    memory: 2
   },
   {
-    instance:'medium',
+    instance: 'medium',
     cpu: 2,
-    cpuHour: 24,
-    memory:4	
+    memory: 4
   },
   {
-    instance:'large',
+    instance: 'large',
     cpu: 2,
-    cpuHour: 36,
-    memory:8	
+    memory: 8
   },
   {
-    instance:'xlarge',
+    instance: 'xlarge',
     cpu: 4,
-    cpuHour: 96,
-    memory:0.5	
+    memory: 16
   },
   {
-    instance:'2xlarge',
+    instance: '2xlarge',
     cpu: 8,
-    cpuHour: 192,
-    memory:32	
+    memory: 32
   }
 ]
+
+export function formatBytes(megabytes: number, decimals = 2) {
+  if (megabytes === 0) return 0;
+
+  const k = 1024;
+  const dm = decimals < 0 ? 0 : decimals;
+  const sizes = ['MB', 'GB'];
+
+  const i = Math.floor(Math.log(megabytes) / Math.log(k));
+
+  return parseFloat((megabytes / Math.pow(k, i)).toFixed(dm)) + ' ' + sizes[i];
+}

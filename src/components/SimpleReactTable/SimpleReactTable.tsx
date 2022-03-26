@@ -11,6 +11,7 @@ interface ISimpleReactTableProps {
   classStyles?: string;
   showPag?: boolean;
   pageSize?: number;
+  isLoading?: boolean;
 }
 const SimpleReactTable = (props: ISimpleReactTableProps) => {
 
@@ -23,6 +24,7 @@ const SimpleReactTable = (props: ISimpleReactTableProps) => {
     classStyles,
     showPag,
     onRowClick,
+    isLoading
   } = props;
 
   return (
@@ -30,9 +32,10 @@ const SimpleReactTable = (props: ISimpleReactTableProps) => {
       className={classStyles ? classStyles : '-striped -highlight'}
       data={data}
       columns={columns}
-      defaultPageSize={pageSize ? pageSize : 5}
+      defaultPageSize={pageSize ? pageSize : 10}
       showPagination={showPag === false ? false : true}
       noDataText={noData}
+      loading={isLoading}
       getTrProps={(_: any, rowInfo: any) => {
         if (handleOpenModal && rowInfo && rowInfo.row) {
           return {
@@ -43,6 +46,7 @@ const SimpleReactTable = (props: ISimpleReactTableProps) => {
         } else if (onRowClick && rowInfo && rowInfo.row) {
           return {
             onClick: () => {
+              console.log(rowInfo)
               onRowClick(rowInfo);
             },
           };

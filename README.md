@@ -45,7 +45,8 @@ Accelerated Computing
 Storage Optimized
 Instance Features
 
-Ternary wants to help its customers identify instances which should be right-sized, for example by choosing a different instance type which better matches the nature of the workload. The right-sizing can be identified by comparing the CPU and memory usage to the provisioned amount of CPU over time.
+Ternary wants to help its customers identify instances which should be right-sized, for example by choosing a different instance type which better matches the nature of the workload. The right-sizing can be identified by comparing the CPU and memory usage to the provisioned amount of CPU over time. 
+
 Develop a way to visualize the utilization data in a way which makes identifying candidates for right-sizing simple. Also, it should be possible to group the data by labels to identify patterns for instances that all fall into the same label groups.
 Submission Guidelines
 
@@ -75,3 +76,9 @@ Let me know if you have any other questions!
 Please submit here:
 https://app3.greenhouse.io/tests/127a8032e01c9c26bc46e704812ac60c?utm_medium=email&utm_source=TakeHomeTest
 
+The main rule for rightsizing is something like:
+ "I don't want to spend money on more resources than I need." But feel free to use any heuristics (like the 40% mem one) to avoid over-correcting... I'll leave that up to you.
+
+In the case where there's a big skew between CPU and MEM, yeah, I'd just assume you need a large machine that can handle the load. In the real world, you would likely decide to select a High-Mem option, but I don't want to over complicate things for the purposes of this assignment.
+
+If you want to solve it, there may be a way to call the users' attention to those cases so they're aware of the situation and can intervene with some human intelligence.
