@@ -43,13 +43,6 @@ const SimpleReactTable = (props: ISimpleReactTableProps) => {
               props.handleOpenModal(rowInfo);
             },
           };
-        } else if (onRowClick && rowInfo && rowInfo.row) {
-          return {
-            onClick: () => {
-              console.log(rowInfo)
-              onRowClick(rowInfo);
-            },
-          };
         } else {
           return {};
         }

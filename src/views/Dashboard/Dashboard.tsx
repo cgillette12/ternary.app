@@ -1,10 +1,11 @@
-/* eslint-disable react-hooks/exhaustive-deps */
+
 import { useEffect, useState } from 'react'
 import { ComputeUtilization } from '../../App'
 import SimpleReactTable from '../../components/SimpleReactTable/SimpleReactTable'
 import InstanceTableColumns from './components/InstanceTableColumns'
-import { formatBytes } from './Dashboard.utils'
+import { formatBytes, intancesJson } from './Dashboard.utils'
 import SimpleDropdown from '../../components/SimpleDropdown/SimpleDropdown'
+import ViewInstanceModal from './components/ViewInstanceModal'
 interface IDashboard {
   instanceUsage: ComputeUtilization[] | null
   filterables: any | null
@@ -16,12 +17,16 @@ function Dashboard({ instanceUsage, filterables }: IDashboard) {
   const [teamsFilterValue, setTeamsFilterValue] = useState<string>('')
   const [envFilterValue, setEnvFilterValue] = useState<string>('')
   const [isTableLoading, setIsTableLoading] = useState<boolean>(false)
+  const [isModalOpen, setisModalOpen] = useState<boolean>(false)
+  const [selectedInstance, setSelectedInstance] = useState<any>([])
   useEffect(() => {
     const formatTableData = (): void => {
       const data = instanceUsage?.map((instance: ComputeUtilization) => {
-        const { labels, cpuUsage, memUsage, memory, cpus } = instance
+        const { labels, cpuUsage, memUsage, memory, cpus} = instance
+        const type = handleTypeRequirements({ memory: memory, cpus })
         return {
           ...instance,
+          type,
           team: labels.team,
           env: labels.environment,
           cpuUsage: cpuUsage.toFixed(2),
@@ -51,6 +56,26 @@ function Dashboard({ instanceUsage, filterables }: IDashboard) {
     handleFilterTable()
   }, [envFilterValue, teamsFilterValue, initTableData])
 
+  const handleTypeRequirements = ({ memory, cpus }: { memory: number, cpus: number }) => {
+    let instanceType = ''
+    intancesJson.map((instances: any) => {
+      const { requirements } = instances
+      if (requirements({ memory })) {
+        const mem = formatBytes(memory).split(' ')[0]
+        instanceType = `c${cpus}.${mem}${instances.instanceType}`
+      }
+      return true
+    });
+    return instanceType
+  }
+
+  const handleOpenModal = (isOpen: boolean, instance?: any) => {
+    if (instance) {
+      const { original } = instance;
+      setSelectedInstance(original)
+      setisModalOpen(isOpen)
+    }
+  }
   return (
     <div className='h-100'>
       <section className='card p-3'>
@@ -85,9 +110,13 @@ function Dashboard({ instanceUsage, filterables }: IDashboard) {
             columns={InstanceTableColumns}
             classStyles="bg-white -highlight"
             isLoading={isTableLoading}
+            handleOpenModal={(instance: any) =>
+              handleOpenModal(true, instance)
+            }
           />
         </div>
       </section>
+      <ViewInstanceModal isOpen={isModalOpen} onModalClose={() => setisModalOpen(false)} instance={selectedInstance}/>
     </div>
   )
 }

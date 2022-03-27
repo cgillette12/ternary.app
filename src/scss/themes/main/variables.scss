@@ -30,7 +30,7 @@ $theme-colors: (
   "grey-500":$grey-500,
 );
 
-$font-size-base: 1rem !default;
+// $font-size-base: 1rem !default;
 
 $font-sizes: (
   12: 12px,
@@ -46,7 +46,7 @@ $font-sizes: (
 
 @each $size in map-keys($font-sizes) {
   .fs-#{$size} {
-    $pixel: unquote("px");
+    $pixel : unquote("px");
     font-size: #{$size}$pixel;
   }
 }
@@ -81,12 +81,6 @@ $types: "bg", "btn", "border", "text";
       filter: brightness(90%);
     }
   }
-
-  // .text-#{$key}
-  // &:hover
-  // &:focus {
-  //   color: $primary !important;
-  // }
 
   .bg-#{$key} {
     background-color: $color !important;
@@ -139,3 +133,11 @@ $spacers: map-merge(
   ),
   $spacers
 );
+
+
+$fontWeights: (100,200,300,400,500,600,700,800,900);
+@each $weight in $fontWeights {
+  .font-#{$weight} {
+    font-weight: $weight
+  }
+}

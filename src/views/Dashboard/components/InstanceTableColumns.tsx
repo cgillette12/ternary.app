@@ -5,10 +5,16 @@ export const InstanceTableColumns = [
     accessor: 'id',
   },
   {
+    Header: 'Type',
+    accessor: 'type',
+    Cell: (props: any) => {
+      return (<div className={`text-center`}> {props?.value || 0}</div>)
+    }
+  },
+  {
     Header: 'Team',
     accessor: 'team',
     Cell: (props: any) => {
-      // const { labels } = props.original
       return (<div className={`text-center`}> {props?.value || 0}</div>)
     }
   },
