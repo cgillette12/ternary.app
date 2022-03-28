@@ -68,7 +68,7 @@ export const InstanceTableColumns = [
       const bgColor = props?.value < 100 && props?.value >= 60 ? 'bg-success' : (props?.value < 59 && props?.value > 50) ? 'bg-warning' : 'bg-danger';
       return (<div className={`${bgColor} text-white text-center`}> {props?.value || 0}%</div>)
     }
-  }
+  },
 
 ];
 export default InstanceTableColumns;

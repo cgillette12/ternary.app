@@ -1,8 +1,9 @@
 import { useState, useEffect } from 'react'
 import { Modal, Button, Badge } from 'react-bootstrap';
+import { Table } from '../Dashboard.types'
 interface IModal {
   isOpen: boolean;
-  instance: any;
+  instance: Table | undefined;
   onModalClose: () => void,
   data?: any;
 };
@@ -21,11 +22,14 @@ function ViewInstanceModal({ isOpen, instance, onModalClose }: IModal) {
     memory,
     team,
     type,
-  } = instance
+  } = instance || {}
+
   useEffect(() => {
     const renderRecommendations = () => {
-      const memorySize = memPresentage === 100 ? 'should increase size of Memory' : memPresentage < 100 && memPresentage >= 60 ? `Memory is properly size` : (memPresentage < 59 && memPresentage > 50) ? 'Memory could require services' : 'Decrease size of Memory';
-      const cpuSize = cpuPresentage === 100 ? 'should increase size of CPU' : cpuPresentage < 100 && cpuPresentage >= 60 ? `CPU is properly size` : (cpuPresentage < 59 && cpuPresentage > 50) ? 'CPU could require services' : 'Decrease size of CPU';
+      const memValue = memPresentage || 0
+      const cpuValue = cpuPresentage || 0
+      const memorySize = memValue === 100 ? 'should increase size of Memory' : memValue < 100 && memValue >= 60 ? `Memory is properly size` : (memValue < 59 && memValue > 50) ? 'Memory could require services' : 'Decrease size of Memory';
+      const cpuSize = cpuValue === 100 ? 'should increase size of CPU' : cpuValue < 100 && cpuValue >= 60 ? `CPU is properly size` : (cpuValue < 59 && cpuValue > 50) ? 'CPU could require services' : 'Decrease size of CPU';
       setMemRec(memorySize)
       setCpuRec(cpuSize)
     }

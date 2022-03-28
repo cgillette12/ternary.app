@@ -15,17 +15,19 @@ function SimpleDropdown({ options, label, value, onChange }: IDropdown) {
   }
 
   return (
-    <Dropdown>
-      <Dropdown.Toggle variant="secondary" id="dropdown-basic">
-        {value ? value : label}
-      </Dropdown.Toggle>
+    <>
+      <label style={{fontSize: 14}}>{label}</label>
+      <Dropdown>
+        <Dropdown.Toggle variant="secondary" id="dropdown-basic" style={{width: 150}}>
+          {value ? value : label}
+        </Dropdown.Toggle>
 
-      <Dropdown.Menu>
-        <Dropdown.Item onClick={() => onChange('')}>{label}</Dropdown.Item>
-        {renderItems()}
-      </Dropdown.Menu>
-    </Dropdown>
-
+        <Dropdown.Menu>
+          <Dropdown.Item onClick={() => onChange('')}>{label}</Dropdown.Item>
+          {renderItems()}
+        </Dropdown.Menu>
+      </Dropdown>
+    </>
   )
 }
 

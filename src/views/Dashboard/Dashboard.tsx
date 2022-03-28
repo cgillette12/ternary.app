@@ -1,40 +1,49 @@
 
-import { useEffect, useState } from 'react'
 import { ComputeUtilization } from '../../App'
-import SimpleReactTable from '../../components/SimpleReactTable/SimpleReactTable'
 import InstanceTableColumns from './components/InstanceTableColumns'
-import { formatBytes, intancesJson } from './Dashboard.utils'
-import SimpleDropdown from '../../components/SimpleDropdown/SimpleDropdown'
+import SimpleReactTable from '../../components/SimpleReactTable/SimpleReactTable'
 import ViewInstanceModal from './components/ViewInstanceModal'
-interface IDashboard {
-  instanceUsage: ComputeUtilization[] | null
-  filterables: any | null
-}
+import TableFilters from './components/TableFilters'
+import { formatBytes, intancesJson, handleSearchFilter, handleFilterByKey } from './Dashboard.utils'
+import { useEffect, useState } from 'react'
+import { Table, IDashboard } from './Dashboard.types'
+
 
 function Dashboard({ instanceUsage, filterables }: IDashboard) {
-  const [tableData, setTableData]: any = useState([])
-  const [initTableData, setInitTableData]: any = useState([])
-  const [teamsFilterValue, setTeamsFilterValue] = useState<string>('')
-  const [envFilterValue, setEnvFilterValue] = useState<string>('')
+  const [envFilter, setEnvFilter] = useState<string>('')
+  const [initTableData, setInitTableData] = useState<Table[]>([])
   const [isTableLoading, setIsTableLoading] = useState<boolean>(false)
   const [isModalOpen, setisModalOpen] = useState<boolean>(false)
-  const [selectedInstance, setSelectedInstance] = useState<any>([])
+  const [selectedInstance, setSelectedInstance] = useState<Table>()
+  const [searchFilter, setSearchFilter] = useState<string>('')
+  const [statusFilter, setStatusFilter] = useState<string>('')
+  const [tableData, setTableData] = useState<Table[]>([])
+  const [teamsFilter, setTeamsFilter] = useState<string>('')
+
   useEffect(() => {
     const formatTableData = (): void => {
-      const data = instanceUsage?.map((instance: ComputeUtilization) => {
-        const { labels, cpuUsage, memUsage, memory, cpus} = instance
+      const data: Table[] = []
+      instanceUsage?.map((instance: ComputeUtilization) => {
+        const { labels, cpuUsage, memUsage, memory, cpus } = instance
         const type = handleTypeRequirements({ memory: memory, cpus })
-        return {
-          ...instance,
-          type,
-          team: labels.team,
-          env: labels.environment,
-          cpuUsage: cpuUsage.toFixed(2),
-          cpuPresentage: Math.floor(cpuUsage / cpus * 100),
-          memUsage: formatBytes(memUsage),
-          memory: formatBytes(memory),
-          memPresentage: Math.floor(memUsage / memory * 100)
+        const memPresentage: number = Math.floor(memUsage / memory * 100)
+        const cpuPresentage: number = Math.floor(cpuUsage / cpus * 100)
+        const status = handleStatus({ cpuPresentage, memPresentage })
+        if (instance) {
+          data.push({
+            ...instance,
+            type,
+            team: labels.team,
+            env: labels.environment,
+            cpuUsage: cpuUsage.toFixed(2),
+            cpuPresentage: Math.floor(cpuUsage / cpus * 100),
+            memUsage: formatBytes(memUsage),
+            memory: formatBytes(memory),
+            memPresentage: memPresentage,
+            status
+          })
         }
+        return false
       })
       setTableData(data || [])
       setInitTableData(data || [])
@@ -45,16 +54,18 @@ function Dashboard({ instanceUsage, filterables }: IDashboard) {
   useEffect(() => {
     const handleFilterTable = () => {
       setIsTableLoading(true)
-      let filterData: any = initTableData
-      filterData = envFilterValue ? filterData.filter((data: any) => data.env === envFilterValue) : filterData
-      filterData = teamsFilterValue ? filterData.filter((data: any) => data.team === teamsFilterValue) : filterData
-      setTableData(filterData)
+      let currentTableData: any = initTableData
+      currentTableData = handleFilterByKey({ currentTableData, key: { keyName: 'env' }, filterValue:envFilter });
+      currentTableData = handleFilterByKey({ currentTableData, key: { keyName: 'team' }, filterValue:teamsFilter });
+      currentTableData = handleFilterByKey({ currentTableData, key: { keyName: 'status' }, filterValue:statusFilter });
+      currentTableData = handleSearchFilter({ currentTableData, searchFilter })
+      setTableData(currentTableData)
       setTimeout(() => {
         setIsTableLoading(false)
       }, 1000)
     }
     handleFilterTable()
-  }, [envFilterValue, teamsFilterValue, initTableData])
+  }, [envFilter, teamsFilter, initTableData, statusFilter, searchFilter])
 
   const handleTypeRequirements = ({ memory, cpus }: { memory: number, cpus: number }) => {
     let instanceType = ''
@@ -69,6 +80,18 @@ function Dashboard({ instanceUsage, filterables }: IDashboard) {
     return instanceType
   }
 
+  const handleStatus = ({ cpuPresentage, memPresentage }: { cpuPresentage: number, memPresentage: number }) => {
+    let instanceStatus = 'Right Sized'
+    const memoryStatus = memPresentage < 100 && memPresentage >= 60 ? 'Right Sized' : (memPresentage < 59 && memPresentage > 50) ? 'Warning' : 'Danger';
+    const cpuStatus = cpuPresentage < 100 && cpuPresentage >= 60 ? 'Right Sized' : (cpuPresentage < 59 && cpuPresentage > 50) ? 'Warning' : 'Danger';
+    if (memoryStatus === 'Danger' || cpuStatus === 'Danger') {
+      instanceStatus = 'Danger'
+    } else if (cpuStatus === 'Warning' || memoryStatus === 'Warning') {
+      instanceStatus = 'Warning'
+    }
+    return instanceStatus
+  }
+
   const handleOpenModal = (isOpen: boolean, instance?: any) => {
     if (instance) {
       const { original } = instance;
@@ -76,39 +99,28 @@ function Dashboard({ instanceUsage, filterables }: IDashboard) {
       setisModalOpen(isOpen)
     }
   }
+
   return (
     <div className='h-100'>
       <section className='card p-3'>
         <div className='card-body'>
-          <div className='mb-3'>
-            <h4>Filters</h4>
-            <div className='d-flex'>
-              <div className='me-3'>
-                <SimpleDropdown
-                  label='Select Team'
-                  options={filterables?.teams || []}
-                  value={teamsFilterValue}
-                  onChange={(teamValue: string) => {
-                    setTeamsFilterValue(teamValue)
-                  }}
-                />
-              </div>
-              <div>
-                <SimpleDropdown
-                  label='Select Env'
-                  options={filterables?.envs || []}
-                  value={envFilterValue}
-                  onChange={(envValue: string) => {
-                    setEnvFilterValue(envValue)
-                  }}
-                />
-              </div>
-            </div>
-          </div>
+          <h2>Instances</h2>
+          <p>Use this table to help find how your instances are holding up over the last 30 days</p>
+          <TableFilters
+            envFilter={envFilter}
+            filterables={filterables}
+            searchFilter={searchFilter}
+            statusFilter={statusFilter}
+            teamsFilter={teamsFilter}
+            setEnvFilter={setEnvFilter}
+            setSearchFilter={setSearchFilter}
+            setStatusFilter={setStatusFilter}
+            setTeamsFilter={setTeamsFilter}
+          />
           <SimpleReactTable
             data={tableData || []}
             columns={InstanceTableColumns}
-            classStyles="bg-white -highlight"
+            classStyles='bg-white -highlight'
             isLoading={isTableLoading}
             handleOpenModal={(instance: any) =>
               handleOpenModal(true, instance)
@@ -116,7 +128,7 @@ function Dashboard({ instanceUsage, filterables }: IDashboard) {
           />
         </div>
       </section>
-      <ViewInstanceModal isOpen={isModalOpen} onModalClose={() => setisModalOpen(false)} instance={selectedInstance}/>
+      <ViewInstanceModal isOpen={isModalOpen} onModalClose={() => setisModalOpen(false)} instance={selectedInstance} />
     </div>
   )
 }

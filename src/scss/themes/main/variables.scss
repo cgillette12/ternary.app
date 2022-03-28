@@ -32,24 +32,6 @@ $theme-colors: (
 
 // $font-size-base: 1rem !default;
 
-$font-sizes: (
-  12: 12px,
-  14: 14px,
-  18: 18px,
-  20: 20px,
-  24: 24px,
-  32: 32px,
-  34: 34px,
-  36: 36px,
-  45: 45px,
-);
-
-@each $size in map-keys($font-sizes) {
-  .fs-#{$size} {
-    $pixel : unquote("px");
-    font-size: #{$size}$pixel;
-  }
-}
 
 $types: "bg", "btn", "border", "text";
 @each $key, $color in $theme-colors {
