@@ -18,7 +18,7 @@ function SimpleDropdown({ options, label, value, onChange }: IDropdown) {
     <>
       <label style={{fontSize: 14}}>{label}</label>
       <Dropdown>
-        <Dropdown.Toggle variant="secondary" id="dropdown-basic" style={{width: 150}}>
+        <Dropdown.Toggle variant="primary" id="dropdown-basic" style={{width: 150}}>
           {value ? value : label}
         </Dropdown.Toggle>
 

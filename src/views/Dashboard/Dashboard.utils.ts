@@ -91,6 +91,6 @@ export const handleFilterByKey = ({ currentTableData, key, filterValue }: { curr
 export const handleSearchFilter = ({ currentTableData, searchFilter }: { currentTableData: Table[], searchFilter?: string }) => {
   return searchFilter ? currentTableData?.filter((data: Table) => {
     const search = searchFilter?.trim() || ''
-    return data.id.includes(search) || data.team.includes(search) || data.env.includes(search)
+    return data.id.includes(search) || data.team.includes(search) || data.env.includes(search) || data.type.includes(search)
   }) : currentTableData;
 }

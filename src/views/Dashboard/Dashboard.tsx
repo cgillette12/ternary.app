@@ -101,8 +101,8 @@ function Dashboard({ instanceUsage, filterables }: IDashboard) {
   }
 
   return (
-    <div className='h-100'>
-      <section className='card p-3'>
+    <div className='h-100 bg-dark-500 '>
+      <section className='card p-3 bg-dark-500 text-light'>
         <div className='card-body'>
           <h2>Instances</h2>
           <p>Use this table to help find how your instances are holding up over the last 30 days</p>
@@ -120,7 +120,7 @@ function Dashboard({ instanceUsage, filterables }: IDashboard) {
           <SimpleReactTable
             data={tableData || []}
             columns={InstanceTableColumns}
-            classStyles='bg-white -highlight'
+            classStyles='table-dark -highlight'
             isLoading={isTableLoading}
             handleOpenModal={(instance: any) =>
               handleOpenModal(true, instance)

@@ -28,7 +28,6 @@ interface Labels {
 }
 
 function App() {
-  const [error, setError] = useState<string | null>(null)
   const [instanceUsage, setInstanceUsage] = useState<ComputeUtilization[] | null>(null)
   const [isLoading, setisLoading] = useState<boolean>(false)
   const [filterables, setFilterables] = useState<{ teams: string[], envs: string[] }>({ teams: [], envs: [] })  
@@ -55,7 +54,6 @@ function App() {
       setisLoading(false)
     } catch (error: any) {
       setisLoading(false)
-      setError(error)
     }
   }
   if (isLoading) {
@@ -65,7 +63,7 @@ function App() {
       </div>)
   }
   return (
-    <div className="App">
+    <div className="App vh-100">
       <header className="App-header bg-primary p-3 text-white">
         <h2>Ternary app</h2>
       </header>
