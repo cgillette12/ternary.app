@@ -61,7 +61,6 @@ function Dashboard({ instanceUsage, filterables }: IDashboard) {
       currentTableData = handleFilterByKey({ currentTableData, key: { keyName: 'status' }, filterValue:statusFilter });
       currentTableData = handleSearchFilter({ currentTableData, searchFilter })
       if(currentTableData?.length < pageSize){
-        console.log('hello')
         setPageSize(10)
       }
       setTableData(currentTableData)
@@ -99,8 +98,7 @@ function Dashboard({ instanceUsage, filterables }: IDashboard) {
 
   const handleOpenModal = (isOpen: boolean, instance?: any) => {
     if (instance) {
-      const { original } = instance;
-      setSelectedInstance(original)
+      setSelectedInstance(instance)
       setisModalOpen(isOpen)
     }
   }
@@ -125,15 +123,10 @@ function Dashboard({ instanceUsage, filterables }: IDashboard) {
           <SimpleReactTable
             data={tableData || []}
             pageSize={pageSize}            
-            columns={InstanceTableColumns}
+            columns={InstanceTableColumns(handleOpenModal)}
             classStyles='table-dark'
             isLoading={isTableLoading}
-            onPageSizeChange={(e: number) => {
-              setPageSize(e);
-            }}
-            handleOpenModal={(instance: any) =>
-              handleOpenModal(true, instance)
-            }
+            onPageSizeChange={(e: number) => setPageSize(e)}
           />
         </div>
       </section>

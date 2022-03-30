@@ -1,5 +1,5 @@
 
-export const InstanceTableColumns = [
+export const InstanceTableColumns = (handleOpenModal: (isOpen: boolean, values: any) => void) => [
   {
     Header: 'Id',
     accessor: 'id',
@@ -83,10 +83,11 @@ export const InstanceTableColumns = [
     Header: '',
     accessor: '',
     disableSortBy: false,
-    Cell: () => {
+    Cell: (props: { value: any, row: any }) => {
+      const { row: { _original: rowData } } = props;
       return (
         <div className='text-center'>
-          <div className='btn btn-primary'>View</div>
+          <div className='btn btn-primary' onClick={() => handleOpenModal(true, rowData)}>View</div>
         </div>
       )
     }

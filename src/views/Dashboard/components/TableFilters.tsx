@@ -1,4 +1,6 @@
 import SimpleDropdown from '../../../components/SimpleDropdown/SimpleDropdown'
+import InstanceTypeDropDown from '../components/InstanceTypeDropDown'
+
 interface ITableFilters {
   filterables: { teams: string[], envs: string[] };
   teamsFilter: string;
@@ -25,10 +27,20 @@ function TableFilters({
     <div className='mb-3 '>
       <div className='d-flex align-items-center'>
         <div className='w-25'>
-          <label style={{fontSize: 14}}>Search:</label>
+          <label style={{ fontSize: 14 }}>Search:</label>
           <div className='me-3'>
-            <input type="text" value={searchFilter} onChange={(e) => setSearchFilter(e.target.value) } className='w-100' />
+            <input type="text" value={searchFilter} onChange={(e) => setSearchFilter(e.target.value)} className='w-100' />
           </div>
+        </div>
+        <div className='me-3'>
+          <InstanceTypeDropDown
+            label='Select Status'
+            options={['Right Sized', 'Warning', 'Danger']}
+            value={statusFilter}
+            onChange={(status: string) => {
+              setStatusFilter(status)
+            }}
+          />
         </div>
         <div className='me-3'>
           <SimpleDropdown
@@ -47,6 +59,16 @@ function TableFilters({
             value={envFilter}
             onChange={(env: string) => {
               setEnvFilter(env)
+            }}
+          />
+        </div>
+        <div className='me-3'>
+          <SimpleDropdown
+            label='Select Status'
+            options={['Right Sized', 'Warning', 'Danger']}
+            value={statusFilter}
+            onChange={(status: string) => {
+              setStatusFilter(status)
             }}
           />
         </div>

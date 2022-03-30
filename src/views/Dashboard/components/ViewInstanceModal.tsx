@@ -39,6 +39,7 @@ function ViewInstanceModal({ isOpen, instance, onModalClose }: IModal) {
 
 
 
+
   return (
     <Modal
       show={isOpen}
@@ -46,6 +47,7 @@ function ViewInstanceModal({ isOpen, instance, onModalClose }: IModal) {
       size='xl'
       aria-labelledby='contained-modal-title-vcenter'
       centered
+      className='border border-0'
     >
       <Modal.Header className='bg-dark-500'>
         <Modal.Title className='w-100 text-light'>
