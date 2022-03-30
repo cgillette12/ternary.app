@@ -19,6 +19,7 @@ function Dashboard({ instanceUsage, filterables }: IDashboard) {
   const [statusFilter, setStatusFilter] = useState<string>('')
   const [tableData, setTableData] = useState<Table[]>([])
   const [teamsFilter, setTeamsFilter] = useState<string>('')
+  const [pageSize, setPageSize] = useState<number>(10)
 
   useEffect(() => {
     const formatTableData = (): void => {
@@ -59,13 +60,17 @@ function Dashboard({ instanceUsage, filterables }: IDashboard) {
       currentTableData = handleFilterByKey({ currentTableData, key: { keyName: 'team' }, filterValue:teamsFilter });
       currentTableData = handleFilterByKey({ currentTableData, key: { keyName: 'status' }, filterValue:statusFilter });
       currentTableData = handleSearchFilter({ currentTableData, searchFilter })
+      if(currentTableData?.length < pageSize){
+        console.log('hello')
+        setPageSize(10)
+      }
       setTableData(currentTableData)
       setTimeout(() => {
         setIsTableLoading(false)
       }, 1000)
     }
     handleFilterTable()
-  }, [envFilter, teamsFilter, initTableData, statusFilter, searchFilter])
+  }, [envFilter, teamsFilter, initTableData, statusFilter, searchFilter, pageSize])
 
   const handleTypeRequirements = ({ memory, cpus }: { memory: number, cpus: number }) => {
     let instanceType = ''
@@ -102,9 +107,9 @@ function Dashboard({ instanceUsage, filterables }: IDashboard) {
 
   return (
     <div className='h-100 bg-dark-500 '>
-      <section className='card p-3 bg-dark-500 text-light'>
+      <section className='card px-3 bg-dark-500 text-light'>
         <div className='card-body'>
-          <h2>Instances</h2>
+          <h3>Instances</h3>
           <p>Use this table to help find how your instances are holding up over the last 30 days</p>
           <TableFilters
             envFilter={envFilter}
@@ -119,9 +124,13 @@ function Dashboard({ instanceUsage, filterables }: IDashboard) {
           />
           <SimpleReactTable
             data={tableData || []}
+            pageSize={pageSize}            
             columns={InstanceTableColumns}
-            classStyles='table-dark -highlight'
+            classStyles='table-dark'
             isLoading={isTableLoading}
+            onPageSizeChange={(e: number) => {
+              setPageSize(e);
+            }}
             handleOpenModal={(instance: any) =>
               handleOpenModal(true, instance)
             }

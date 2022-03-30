@@ -56,12 +56,6 @@ $types: "bg", "btn", "border", "text";
 
   .text-#{$key} {
     color: $color !important;
-    &:hover,
-    &:focus,
-    &:active{
-      color: $color !important;
-      filter: brightness(90%);
-    }
   }
 
   // .text-#{$key}

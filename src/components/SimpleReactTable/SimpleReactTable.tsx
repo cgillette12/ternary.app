@@ -6,41 +6,44 @@ interface ISimpleReactTableProps {
   data?: any[];
   style?: any;
   noData?: string;
-  handleOpenModal?: any;
   onRowClick?: any;
   classStyles?: string;
   showPag?: boolean;
+  pages?: number;
   pageSize?: number;
   isLoading?: boolean;
+  handleOpenModal?: (rowValue: any) => void;
+  onPageSizeChange?: (pageSize: number) => void;
 }
 const SimpleReactTable = (props: ISimpleReactTableProps) => {
-
   const {
     data,
     columns,
     pageSize,
     noData,
-    handleOpenModal,
     classStyles,
     showPag,
-    onRowClick,
-    isLoading
+    isLoading,
+    handleOpenModal,
+    onPageSizeChange
   } = props;
-
   return (
     <ReactTable
       className={classStyles ? classStyles : '-striped -highlight'}
       data={data}
       columns={columns}
-      defaultPageSize={pageSize ? pageSize : 10}
+      pageSize={pageSize ? pageSize : 10}
+      defaultPageSize={10}
       showPagination={showPag === false ? false : true}
       noDataText={noData}
       loading={isLoading}
+      sortable={false}
+      onPageSizeChange={onPageSizeChange || false}
       getTrProps={(_: any, rowInfo: any) => {
         if (handleOpenModal && rowInfo && rowInfo.row) {
           return {
             onClick: () => {
-              props.handleOpenModal(rowInfo);
+              handleOpenModal(rowInfo);
             },
           };
         } else {
