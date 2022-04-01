@@ -72,14 +72,6 @@ function TableFilters({
             onChange={setStatusFilter}
           />
         </div>
-        <div className='me-3'>
-          <SimpleDropdown
-            label='Status'
-            options={['Right Sized', 'Warning', 'Danger']}
-            value={statusFilter}
-            onChange={setStatusFilter}
-          />
-        </div>
       </div>
     </div>
   )
