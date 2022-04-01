@@ -1,14 +1,12 @@
 const Loader = ({
   message = '',
-  width = '100',
-  className,
 }: any) => (
-    <div className={className}>
-      <img src="https://www.freeiconspng.com/thumbs/load-icon-png/load-icon-png-8.png" width={width} alt="" />
-      {message && (
-        <h4 className="mt-4">{message}</h4>
-      )}
-    </div>
+  <div className='animated fadeIn pt-1 text-center max-width: 50%;'>
+  <div className='spinner-border text-primary' />
+  <h5 className='mt-2'>
+    {message}
+  </h5>
+</div>
 );
   
 export default Loader;

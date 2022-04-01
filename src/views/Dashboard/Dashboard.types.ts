@@ -1,13 +1,13 @@
-import { ComputeUtilization } from '../../App'
+import { ComputeUtilization } from '../../App.types'
 
 export interface IDashboard {
   instanceUsage: ComputeUtilization[] | null
-  filterables: any | null
+  filterables: { teams: string[], envs: string[], cpuSizes: number[], memSizes: number[] }
 }
 
 export interface Table {
   cpuPresentage: number
-  cpuUsage: string
+  cpuUsage: number
   cpus: number
   env: string
   id: string
@@ -22,6 +22,7 @@ export interface Table {
 export interface AccessTable {
   keyName: keyof Table; 
 }
+
 interface Labels {
   team: string;
   environment: string

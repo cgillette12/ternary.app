@@ -1,4 +1,4 @@
-import { Dropdown } from "react-bootstrap";
+import { Dropdown } from 'react-bootstrap';
 interface IDropdown {
   options: any[],
   value: string,
@@ -19,12 +19,11 @@ function SimpleDropdown({ options, label, value,variantColor, onChange }: IDropd
     <>
       <label className='text-light' style={{ fontSize: 14 }}>{label}</label>
       <Dropdown>
-        <Dropdown.Toggle variant={variantColor ? variantColor : "primary"} id="dropdown-basic" style={{ width: 150 }}>
-          {value ? value : label}
+        <Dropdown.Toggle variant={variantColor ? variantColor : 'primary'} id='dropdown-basic' style={{ width: 150 }}>
+          {value ? value : `Select ${label}`}
         </Dropdown.Toggle>
-
         <Dropdown.Menu className='bg-dark mt-1'>
-          <Dropdown.Item className='text-light' onClick={() => onChange('')}>{label}</Dropdown.Item>
+          <Dropdown.Item className='text-light' onClick={() => onChange('')}>{`Select ${label}`}</Dropdown.Item>
           {renderItems()}
         </Dropdown.Menu>
       </Dropdown>

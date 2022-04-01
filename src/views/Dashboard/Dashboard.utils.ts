@@ -73,7 +73,7 @@ function XXlargeRequiremnts({ memory }: { memory: number }) {
 }
 
 export function formatBytes(megabytes: number, decimals = 2): string {
-  if (megabytes === 0) return "0";
+  if (megabytes === 0) return '0';
 
   const k = 1024;
   const dm = decimals < 0 ? 0 : decimals;
@@ -93,4 +93,8 @@ export const handleSearchFilter = ({ currentTableData, searchFilter }: { current
     const search = searchFilter?.trim() || ''
     return data.id.includes(search) || data.team.includes(search) || data.env.includes(search) || data.type.includes(search)
   }) : currentTableData;
+}
+
+export const handleTypeFilter = ({ currentTableData, typeFilter }: { currentTableData: Table[], typeFilter?: string }) => {
+  return typeFilter ? currentTableData?.filter((data: Table) => data.type.includes(typeFilter)) : currentTableData
 }

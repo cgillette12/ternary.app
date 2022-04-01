@@ -1,0 +1,44 @@
+@import "./variables";
+.ReactTable {
+  border-spacing: 0;
+  border: 1px solid $light !important;
+  .rt-th {
+    margin: 0;
+    padding: 0.5rem;
+    border-right: 1px solid $light !important;
+
+    :last-child {
+      border-right: 0;
+    }
+  }
+  .rt-tr {
+    margin: 0;
+    border-bottom: 1px solid $light !important;
+    :last-child {
+      border-right: 0;
+    }
+  }
+
+  .-pagination .-btn {
+    color: $light !important;
+    background: $primary !important;
+  }
+  .pagination-bottom {
+    margin: 0.5rem;
+  }
+}
+
+.btn-close {
+  color: $light !important;
+}
+
+.modal-content {
+  border: none !important;
+}
+
+.dropdown-item:hover,
+.dropdown-item:focus {
+  color: #1e2125;
+  background-color: $primary !important;
+}
+

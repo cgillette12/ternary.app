@@ -1,17 +1,20 @@
 import { useState, useEffect } from 'react'
-import { Modal, Button, Badge, CloseButton } from 'react-bootstrap';
+import { Modal, Button, Badge, CloseButton, Tooltip, OverlayTrigger } from 'react-bootstrap';
 import { Table } from '../Dashboard.types'
 import SimplePieChart from '../../../components/SimplePieChart/SimplePieChart'
+
 interface IModal {
   isOpen: boolean;
   instance: Table | undefined;
+  filterables: any;
+  handleTypeRequirements: (values: { memory: number, cpus: number }) => string;
   onModalClose: () => void,
-  data?: any;
 };
 
-function ViewInstanceModal({ isOpen, instance, onModalClose }: IModal) {
+function ViewInstanceModal({ isOpen, instance, filterables, handleTypeRequirements, onModalClose }: IModal) {
   const [cpusRec, setCpuRec] = useState('')
   const [memRec, setMemRec] = useState('')
+  const [typeRec, setTypeRec] = useState('')
   const {
     cpuPresentage,
     cpuUsage,
@@ -35,8 +38,28 @@ function ViewInstanceModal({ isOpen, instance, onModalClose }: IModal) {
       setCpuRec(cpuSize)
     }
     renderRecommendations()
-  }, [cpuPresentage, memPresentage])
 
+  }, [cpuPresentage, memPresentage, memUsage, cpuUsage])
+
+  useEffect(() => {
+    const handleTypeRecommendations = ({ memory, cpus }: { memory?: string | undefined, cpus?: number | undefined }) => {
+      let instanceType = ''
+      let findRecMemorySize = 0
+      let findRecCPUSize = 0
+      if (memory && cpus) {
+        const memoryToNumber = +memory.split(' ')[0]
+        findRecMemorySize = filterables.memSizes.reduce((a: number, b: any) => {
+          return Math.abs(b - memoryToNumber) < Math.abs(a - memoryToNumber) ? b : a;
+        });
+        findRecCPUSize = filterables.cpuSizes.reduce((a: number, b: any) => {
+          return Math.abs(b - cpus) < Math.abs(a - cpus) ? b : a;
+        });
+        instanceType = handleTypeRequirements({ memory: findRecMemorySize, cpus: findRecCPUSize })
+        setTypeRec(instanceType)
+      }
+    }
+    handleTypeRecommendations({ memory: memUsage, cpus: cpuUsage })
+  }, [memUsage, cpuUsage, filterables, handleTypeRequirements])
 
 
 
@@ -55,11 +78,20 @@ function ViewInstanceModal({ isOpen, instance, onModalClose }: IModal) {
           <Badge bg='primary ms-3'>{team}</Badge>
           <Badge bg='primary ms-3'>{env}</Badge>
         </Modal.Title>
-        <CloseButton onClick={onModalClose} variant="white" />
+        <CloseButton onClick={onModalClose} variant='white' />
       </Modal.Header>
 
       <Modal.Body className='bg-dark-500 text-white'>
-        <h5 className='mb-3'>Type:<Badge bg='dark ms-3 me-2'>{type}</Badge>--{'>'}<Badge bg='success ms-2'>{type}</Badge> </h5>
+        <div className='d-flex '>
+          <h5 className='mb-3'>Type:<Badge bg='dark ms-3 me-2'>{type}</Badge>--{'>'}</h5>
+          <OverlayTrigger
+            delay={{ show: 250, hide: 400 }}
+            placement='right'
+            overlay={<Tooltip id={`Rec-badge`}>Recommened Instance </Tooltip>}
+          >
+            <h5><Badge id='Rec-badge' bg='success ms-2'>{typeRec}</Badge></h5>
+          </OverlayTrigger>
+        </div>
         <div className='d-flex bg-dark-500 text-white'>
           <div className='w-100 card p-3 mx-2 bg-dark-500 text-white'>
             <div className='d-flex justify-content-between' >

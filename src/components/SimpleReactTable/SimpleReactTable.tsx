@@ -3,23 +3,19 @@ import 'react-table/react-table.css';
 
 interface ISimpleReactTableProps {
   columns?: any[];
-  data?: any[];
-  style?: any;
-  noData?: string;
+  data?: any[];  
   classStyles?: string;
-  showPag?: boolean;
   pageSize?: number;
   isLoading?: boolean;
   onPageSizeChange?: (pageSize: number) => void;
 }
+
 const SimpleReactTable = (props: ISimpleReactTableProps) => {
   const {
     data,
     columns,
     pageSize,
-    noData,
     classStyles,
-    showPag,
     isLoading,
     onPageSizeChange
   } = props;
@@ -30,8 +26,7 @@ const SimpleReactTable = (props: ISimpleReactTableProps) => {
       columns={columns}
       pageSize={pageSize ? pageSize : 10}
       defaultPageSize={10}
-      showPagination={showPag === false ? false : true}
-      noDataText={noData}
+      showPagination={ true}
       loading={isLoading}
       sortable={false}
       onPageSizeChange={onPageSizeChange || false}
